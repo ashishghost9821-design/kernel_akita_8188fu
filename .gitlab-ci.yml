@@ -1,0 +1,60 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+  CI_DEPLOY_TOKEN: ${CI_DEPLOY_TOKEN}
+  SP: /builds/shared/$CI_PROJECT_PATH
+  PKG: $SP/pkg
+  KERNEL: $SP/kernel
+
+build:
+  stage: build
+  image: ubuntu:latest
+  services:
+    - docker:dind
+  
+  before_script:
+    - apt get update && apt install git
+    - git config --global user.name Deeepkk
+    - git config --global user.email duxedocontact@gmail.com
+
+  script:
+    - mkdir -p $SP
+    - mkdir -p $PKG
+    - git clone https://gitlab.com/Deeepkk/kernel_lenovo_akita_row_call.git -b droidian --depth=1 $KERNEL
+    - docker run --rm -v $PKG:/buildd -v $KERNEL:/buildd/sources quay.io/droidian/build-essential:current-amd64 bash -c "cd /buildd/sources && RELENG_HOST_ARCH="arm64" releng-build-package"
+    - cp $PKG/*.deb $CI_PROJECT_DIR
+
+  artifacts:
+    name: kernel
+    paths:
+      - $CI_PROJECT_DIR/*.deb
+
+deploy:
+  stage: deploy
+  image: ubuntu:latest
+  needs: 
+    - build
+
+  before_script:
+    - apt-get update && apt-get install -y git
+    - git config --global user.name Deeepkk
+    - git config --global user.email duxedocontact@gmail.com
+
+  script:
+    - git clone https://oauth2:${CI_DEPLOY_TOKEN}@gitlab.com/Deeepkk/apt.git
+    - cd apt/packages
+    - rm linux*
+    - cp $CI_PROJECT_DIR/*.deb .
+    - git add .
+    - git commit -m "Update kernel packages"
+    - git push
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
