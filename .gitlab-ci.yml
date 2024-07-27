@@ -6,7 +6,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
-  CI_DEPLOY_TOKEN: ${CI_DEPLOY_TOKEN}
+  CI_TOKEN: ${CI_TOKEN}
   SP: /builds/shared/$CI_PROJECT_PATH
   PKG: $SP/pkg
   KERNEL: $SP/kernel
@@ -46,7 +46,7 @@ deploy:
     - git config --global user.email duxedocontact@gmail.com
 
   script:
-    - git clone https://oauth2:${CI_DEPLOY_TOKEN}@gitlab.com/Deeepkk/apt.git
+    - git clone https://oauth2:${CI_TOKEN}@gitlab.com/Deeepkk/apt.git
     - cd apt/packages
     - rm linux*
     - cp $CI_PROJECT_DIR/*.deb .
