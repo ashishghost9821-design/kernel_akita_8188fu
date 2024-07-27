@@ -18,7 +18,7 @@ build:
     - docker:dind
   
   before_script:
-    - apt-get update && apt-get install git
+    - apt-get update && apt-get install git -y
     - git config --global user.name Deeepkk
     - git config --global user.email duxedocontact@gmail.com
 
