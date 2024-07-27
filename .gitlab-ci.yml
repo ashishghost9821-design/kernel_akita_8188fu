@@ -51,7 +51,7 @@ deploy:
     - git config --global user.email duxedocontact@gmail.com
 
   script:
-    - git clone git@gitlab.com/Deeepkk/apt.git
+    - git clone git@gitlab.com:Deeepkk/apt.git
     - cd apt/packages
     - rm linux*
     - cp $CI_PROJECT_DIR/*.deb .
