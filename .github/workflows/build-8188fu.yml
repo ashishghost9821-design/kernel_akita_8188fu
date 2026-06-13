@@ -28,4 +28,3 @@ jobs:
         with:
           name: 8188fu-ko
           path: drivers/net/wireless/realtek/rtl8188fu/8188fu.ko
-          
