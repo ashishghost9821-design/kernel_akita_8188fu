@@ -15,12 +15,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison flex libssl-dev make gcc-aarch64-linux-gnu
 
-      - name: Prepare kernel
+      - name: Prepare kernel with exact config
         run: |
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
-          make akita_row_call_defconfig
-          make oldconfig
+          make olddefconfig
           make prepare
           make scripts
 
