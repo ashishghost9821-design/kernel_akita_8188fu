@@ -1,0 +1,31 @@
+name: Build 8188fu for Lenovo Tab M8
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout kernel source
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison flex libssl-dev make gcc-aarch64-linux-gnu
+
+      - name: Build 8188fu module
+        run: |
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          export ARCH=arm64
+          make akita_defconfig
+          make -j$(nproc) M=drivers/net/wireless/realtek/rtl8188fu modules
+
+      - name: Upload 8188fu.ko
+        uses: actions/upload-artifact@v4
+        with:
+          name: 8188fu-ko
+          path: drivers/net/wireless/realtek/rtl8188fu/8188fu.ko
+          
