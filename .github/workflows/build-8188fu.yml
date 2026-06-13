@@ -13,16 +13,18 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison flex libssl-dev make gcc-aarch64-linux-gnu
+          sudo apt-get install -y bc bison flex libssl-dev make clang llvm lld binutils-aarch64-linux-gnu
 
       - name: Prepare kernel with exact config
         run: |
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
+          export CC=clang
+          export CLANG_TRIPLE=aarch64-linux-gnu-
           echo "" > .scmversion
-          make olddefconfig
-          make prepare
-          make scripts
+          make CC=clang CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+          make CC=clang CROSS_COMPILE=aarch64-linux-gnu- prepare
+          make CC=clang CROSS_COMPILE=aarch64-linux-gnu- scripts
 
       - name: Build 8188fu module
         run: |
@@ -30,7 +32,7 @@ jobs:
           export ARCH=arm64
           export KSRC=$(pwd)
           cd drivers/net/wireless/realtek/rtl8188fu
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang KSRC=$KSRC
           find . -name "*.ko"
 
       - name: Upload 8188fu.ko
