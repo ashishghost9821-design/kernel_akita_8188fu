@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 8188fu-ko
-          path: drivers/net/wireless/realtek/rtl8188fu/8188fu.ko
+          path: drivers/net/wireless/realtek/rtl8188fu/rtl8188fu.ko
