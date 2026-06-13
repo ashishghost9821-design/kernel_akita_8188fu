@@ -28,7 +28,10 @@ jobs:
         run: |
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
-          make -j$(nproc) -C $(pwd) M=$(pwd)/drivers/net/wireless/realtek/rtl8188fu modules
+          export KSRC=$(pwd)
+          cd drivers/net/wireless/realtek/rtl8188fu
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC
+          find . -name "*.ko"
 
       - name: Upload 8188fu.ko
         uses: actions/upload-artifact@v4
