@@ -20,6 +20,9 @@ jobs:
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
           make akita_row_call_defconfig
+          make oldconfig
+          make prepare
+          make scripts
           make -j$(nproc) M=drivers/net/wireless/realtek/rtl8188fu modules
 
       - name: Upload 8188fu.ko
