@@ -15,7 +15,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison flex libssl-dev make gcc-aarch64-linux-gnu
 
-      - name: Build 8188fu module
+      - name: Prepare kernel
         run: |
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
@@ -23,7 +23,12 @@ jobs:
           make oldconfig
           make prepare
           make scripts
-          make -j$(nproc) M=drivers/net/wireless/realtek/rtl8188fu KBUILD_EXTRA_SYMBOLS=$(pwd)/Module.symvers
+
+      - name: Build 8188fu module
+        run: |
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          export ARCH=arm64
+          make -j$(nproc) -C $(pwd) M=$(pwd)/drivers/net/wireless/realtek/rtl8188fu modules
 
       - name: Upload 8188fu.ko
         uses: actions/upload-artifact@v4
