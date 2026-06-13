@@ -30,7 +30,7 @@ jobs:
           export ARCH=arm64
           export KSRC=$(pwd)
           cd drivers/net/wireless/realtek/rtl8188fu
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC EXTRA_CFLAGS="-fPIC"
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC
           find . -name "*.ko"
 
       - name: Upload 8188fu.ko
