@@ -23,7 +23,7 @@ jobs:
           make oldconfig
           make prepare
           make scripts
-          make -j$(nproc) M=drivers/net/wireless/realtek/rtl8188fu modules
+          make -j$(nproc) M=drivers/net/wireless/realtek/rtl8188fu KBUILD_EXTRA_SYMBOLS=$(pwd)/Module.symvers
 
       - name: Upload 8188fu.ko
         uses: actions/upload-artifact@v4
