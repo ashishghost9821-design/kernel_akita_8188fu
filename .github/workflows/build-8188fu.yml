@@ -13,9 +13,9 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison flex libssl-dev make python3
+          sudo apt-get install -y bc bison flex libssl-dev make python3 binutils-aarch64-linux-gnu
 
-      - name: Download Android Toolchains
+      - name: Download Android Clang 9.0.3
         run: |
           git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android10-gsi clang-prebuilts
           git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 gcc-prebuilts
@@ -29,7 +29,7 @@ jobs:
           make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- olddefconfig
           make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- prepare
           make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- scripts
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- modules_prepare
+          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- modules_prepare KBUILD_CFLAGS+="-fno-integrated-as"
 
       - name: Build 8188fu module
         run: |
@@ -40,7 +40,6 @@ jobs:
           cd drivers/net/wireless/realtek/rtl8188fu
           make ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- KSRC=$KSRC KBUILD_LDFLAGS_MODULE="-T $KSRC/arch/arm64/kernel/module.lds"
           find . -name "*.ko"
-          aarch64-linux-android-readelf -S rtl8188fu.ko | grep plt
 
       - name: Upload 8188fu.ko
         uses: actions/upload-artifact@v4
