@@ -27,10 +27,10 @@ jobs:
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
           echo "" > .scmversion
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- prepare
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- scripts
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- modules_prepare
+          make CC="clang -fno-integrated-as" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+          make CC="clang -fno-integrated-as" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- prepare
+          make CC="clang -fno-integrated-as" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- scripts
+          make CC="clang -fno-integrated-as" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- modules_prepare
 
       - name: Build 8188fu module
         run: |
@@ -39,7 +39,7 @@ jobs:
           export ARCH=arm64
           export KSRC=$(pwd)
           cd drivers/net/wireless/realtek/rtl8188fu
-          make ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC KBUILD_LDFLAGS_MODULE="-T $KSRC/arch/arm64/kernel/module.lds"
+          make ARCH=arm64 CC="clang -fno-integrated-as" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC KBUILD_LDFLAGS_MODULE="-T $KSRC/arch/arm64/kernel/module.lds"
           find . -name "*.ko"
           aarch64-linux-gnu-readelf -S rtl8188fu.ko | grep plt
 
