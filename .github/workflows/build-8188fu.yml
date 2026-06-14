@@ -17,7 +17,7 @@ jobs:
 
       - name: Download Android Clang 9.0.3
         run: |
-          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android-9.0.0_r1 clang-prebuilts
+          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android10-gsi clang-prebuilts
           export PATH=$(pwd)/clang-prebuilts/clang-r353983c/bin:$PATH
           clang --version
 
@@ -39,7 +39,7 @@ jobs:
           export ARCH=arm64
           export KSRC=$(pwd)
           cd drivers/net/wireless/realtek/rtl8188fu
-          make ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC
+          make ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC KBUILD_LDFLAGS_MODULE="-T $KSRC/arch/arm64/kernel/module.lds"
           find . -name "*.ko"
           aarch64-linux-gnu-readelf -S rtl8188fu.ko | grep plt
 
