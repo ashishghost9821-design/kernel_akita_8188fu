@@ -13,32 +13,25 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison flex libssl-dev make python3 binutils-aarch64-linux-gnu
-
-      - name: Download Android Clang 9.0.3
-        run: |
-          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android10-gsi clang-prebuilts
-          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 gcc-prebuilts
+          sudo apt-get install -y bc bison flex libssl-dev make clang llvm lld binutils-aarch64-linux-gnu
 
       - name: Prepare kernel with exact config
         run: |
-          export PATH=$(pwd)/clang-prebuilts/clang-r353983c/bin:$(pwd)/gcc-prebuilts/bin:$PATH
-          export CROSS_COMPILE=aarch64-linux-android-
+          export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
           echo "" > .scmversion
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- olddefconfig
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- prepare
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- scripts
-          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- modules_prepare KBUILD_CFLAGS+="-fno-integrated-as"
+          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- prepare
+          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- scripts
+          make CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- modules_prepare
 
       - name: Build 8188fu module
         run: |
-          export PATH=$(pwd)/clang-prebuilts/clang-r353983c/bin:$(pwd)/gcc-prebuilts/bin:$PATH
-          export CROSS_COMPILE=aarch64-linux-android-
+          export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
           export KSRC=$(pwd)
           cd drivers/net/wireless/realtek/rtl8188fu
-          make ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- KSRC=$KSRC KBUILD_LDFLAGS_MODULE="-T $KSRC/arch/arm64/kernel/module.lds"
+          make ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- KSRC=$KSRC
           find . -name "*.ko"
 
       - name: Upload 8188fu.ko
